@@ -1,0 +1,4 @@
+scalaz-app
+==========
+
+learning scalaz
