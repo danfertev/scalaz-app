@@ -4,7 +4,7 @@ package ru.anfdenis.scalaz
  * Denis Anfertev
  * 10/9/13 12:03 PM
  */
-object Main extends App {
+object day1 extends App {
   val o1: Option[Int] = Some(0)
   val o2: Option[Option[Int]] = Some(Some(0))
 

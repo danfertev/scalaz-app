@@ -6,6 +6,11 @@ object AppBuild extends Build {
   val appOrganization = "ru.anfdenis"
   val appVersion = "0.1-SNAPSHOT"
   val appScalaVersion = "2.10.2"
+  val appScalacOptions = Seq(
+    "-feature",
+    "-language:higherKinds",
+    "-language:implicitConversions"
+  )
 
   val appDependencies = Seq(
     "org.scalaz" %% "scalaz-core" % "7.0.3"
@@ -15,6 +20,7 @@ object AppBuild extends Build {
     organization := appOrganization,
     version := appVersion,
     scalaVersion := appScalaVersion,
+    scalacOptions ++= appScalacOptions,
     libraryDependencies ++= appDependencies,
     initialCommands in console := "import scalaz._"
   )

@@ -22,7 +22,7 @@ trait CanTruthyOps[A] {
 
   implicit def F: CanTruthy[A]
 
-  final def thruthy: Boolean = F.truthys(self)
+  final def truthy: Boolean = F.truthys(self)
 }
 
 object ToCanIsTruthyOps {
@@ -32,17 +32,54 @@ object ToCanIsTruthyOps {
 
       implicit def F: CanTruthy[A] = ev
     }
-}
 
-object Main extends App {
-
-  import ToCanIsTruthyOps._
+  implicit def listCanTruthy[A]: CanTruthy[List[A]] = CanTruthy.truthys({
+    case Nil => false
+    case _ => true
+  })
 
   implicit val intCanTruthy: CanTruthy[Int] = CanTruthy.truthys({
     case 0 => false
     case _ => true
   })
 
+  implicit val nilCanTruthy: CanTruthy[scala.collection.immutable.Nil.type] = CanTruthy.truthys(_ => false)
 
-  val res1 = 10.truthy
+  implicit val booleanCanTruthy: CanTruthy[Boolean] = CanTruthy.truthys(identity)
+}
+
+trait ShowInConsole[A] {
+  def show(a: A): String
+}
+
+object ShowInConsole {
+  implicit val booleanShow: ShowInConsole[Boolean] = new ShowInConsole[Boolean] {
+    def show(a: Boolean): String = a.toString
+  }
+  implicit val stringShow: ShowInConsole[String] = new ShowInConsole[String] {
+    def show(a: String): String = a
+  }
+}
+
+object truthy extends App {
+
+  import ToCanIsTruthyOps._
+
+  implicit class ShowOp[A: ShowInConsole](a: A) {
+    val F = implicitly[ShowInConsole[A]]
+
+    def show() {
+      println(F.show(a))
+    }
+  }
+
+  def truthyIf[A: CanTruthy, B, C](cond: A)(ifyes: => B)(ifno: => B):B =
+    if (cond.truthy) ifyes else ifno
+
+  10.truthy.show()
+  List("foo").truthy.show()
+  Nil.truthy.show()
+  false.truthy.show()
+
+  truthyIf(Nil)("YEAH!")("NO!").show()
 }
